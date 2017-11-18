@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="hexo,github," />
 
 
 
@@ -94,13 +94,18 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="文蓉子的博客">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="概括 创建Github page库 安装Hexo和配置Hexo文件 设置ssh公钥 部署博客到github  创建Github page库在github创建一个Github page库。不需要增加branch。 GitHub Pages 是用来存放个人主页的仓库，每个用户只能有一个。仓库的名字必须是username.g">
+<meta name="keywords" content="hexo,github">
+<meta property="og:type" content="article">
+<meta property="og:title" content="搭建Hexo + GitHub page博客总结">
+<meta property="og:url" content="http://yoursite.com/2017/11/17/Hexo-GitHub-page/index.html">
 <meta property="og:site_name" content="文蓉子的博客">
+<meta property="og:description" content="概括 创建Github page库 安装Hexo和配置Hexo文件 设置ssh公钥 部署博客到github  创建Github page库在github创建一个Github page库。不需要增加branch。 GitHub Pages 是用来存放个人主页的仓库，每个用户只能有一个。仓库的名字必须是username.github.io。你可以通过http://username.github.io">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-11-18T05:35:54.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="文蓉子的博客">
+<meta name="twitter:title" content="搭建Hexo + GitHub page博客总结">
+<meta name="twitter:description" content="概括 创建Github page库 安装Hexo和配置Hexo文件 设置ssh公钥 部署博客到github  创建Github page库在github创建一个Github page库。不需要增加branch。 GitHub Pages 是用来存放个人主页的仓库，每个用户只能有一个。仓库的名字必须是username.github.io。你可以通过http://username.github.io">
 
 
 
@@ -129,13 +134,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/11/17/Hexo-GitHub-page/"/>
 
 
 
 
 
-  <title>文蓉子的博客</title>
+  <title>搭建Hexo + GitHub page博客总结 | 文蓉子的博客</title>
   
 
 
@@ -160,9 +165,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-   page-home 
- ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -265,9 +268,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -297,9 +300,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/11/17/Hexo-GitHub-page/" itemprop="url">搭建Hexo + GitHub page博客总结</a></h1>
+          <h1 class="post-title" itemprop="name headline">搭建Hexo + GitHub page博客总结</h1>
         
 
         <div class="post-meta">
@@ -371,9 +372,7 @@
       
 
       
-        
-          
-            <h1 id="概括"><a href="#概括" class="headerlink" title="概括"></a>概括</h1><ul>
+        <h1 id="概括"><a href="#概括" class="headerlink" title="概括"></a>概括</h1><ul>
 <li>创建Github page库</li>
 <li>安装Hexo和配置Hexo文件</li>
 <li>设置ssh公钥</li>
@@ -397,8 +396,6 @@
 <p>2.在config文档的deploy属性里加入你的github page的地址<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: git@github.com:user/user.github.io.git</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure></p>
 <p>3.最后部署到远端<br><code>$ hexo generate --deploy</code></p>
 <h1 id="command-cheat-sheet"><a href="#command-cheat-sheet" class="headerlink" title="command cheat sheet"></a>command cheat sheet</h1><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//发表博文</span></span><br><span class="line">$ hexo <span class="keyword">new</span> <span class="string">"postName"</span></span><br><span class="line"><span class="comment">//example: </span></span><br><span class="line">hexo <span class="keyword">new</span> “js i” </span><br><span class="line"><span class="comment">//默认创建一个js-i.md文件 在_posts文件里. 这个默认属性 可以在Writing.default_layout:属性中改变。若改为draft，new命令会把文章放在_drafts文件夹中。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//新建草稿</span></span><br><span class="line">$ hexo <span class="keyword">new</span> draft <span class="string">"postName"</span> <span class="comment">//hexo会创建一个draft文件，并把文档放进去</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//查看草稿在在本地server运行状况</span></span><br><span class="line">$ hexo server --draft</span><br><span class="line"></span><br><span class="line"><span class="comment">//发表草稿为博文</span></span><br><span class="line">$ hexo publish <span class="string">"postName"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//新建单独页面</span></span><br><span class="line">$ hexo <span class="keyword">new</span> page <span class="string">"pageName"</span> </span><br><span class="line"><span class="comment">//该页面会有创建一个单独页面，里面有index.md你可以编辑</span></span><br></pre></td></tr></table></figure>
-          
-        
       
     </div>
     
@@ -413,14 +410,22 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/hexo/" rel="tag"># hexo</a>
+          
+            <a href="/tags/github/" rel="tag"># github</a>
+          
+        </div>
+      
+
+      
+      
+      
 
       
 
       
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -430,10 +435,11 @@
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -441,6 +447,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -461,8 +471,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -524,6 +543,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#概括"><span class="nav-number">1.</span> <span class="nav-text">概括</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建Github-page库"><span class="nav-number">2.</span> <span class="nav-text">创建Github page库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装Hexo和配置Hexo文件"><span class="nav-number">3.</span> <span class="nav-text">安装Hexo和配置Hexo文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#设置ssh公钥"><span class="nav-number">4.</span> <span class="nav-text">设置ssh公钥</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#部署博客到github"><span class="nav-number">5.</span> <span class="nav-text">部署博客到github</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#command-cheat-sheet"><span class="nav-number">6.</span> <span class="nav-text">command cheat sheet</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -637,10 +672,10 @@
   
 
   
-    <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
 <script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
 
-  
+
 
   
 
