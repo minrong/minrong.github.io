@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="javascript,原型链," />
 
 
 
@@ -94,13 +94,18 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="文蓉子的博客">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="（一）Prototype Chaining12345678910111213141516function Asset()&amp;#123;     this.owner = &quot;chris&quot;&amp;#125;Asset.prototype.getValue = function()&amp;#12">
+<meta name="keywords" content="javascript,原型链">
+<meta property="og:type" content="article">
+<meta property="og:title" content="javascript六种继承方法总结">
+<meta property="og:url" content="http://yoursite.com/2017/11/18/js-inheritance/index.html">
 <meta property="og:site_name" content="文蓉子的博客">
+<meta property="og:description" content="（一）Prototype Chaining12345678910111213141516function Asset()&amp;#123;     this.owner = &quot;chris&quot;&amp;#125;Asset.prototype.getValue = function()&amp;#123;     return this.owner; &amp;#125;;function Stock(share)&amp;#123;">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-11-18T21:35:09.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="文蓉子的博客">
+<meta name="twitter:title" content="javascript六种继承方法总结">
+<meta name="twitter:description" content="（一）Prototype Chaining12345678910111213141516function Asset()&amp;#123;     this.owner = &quot;chris&quot;&amp;#125;Asset.prototype.getValue = function()&amp;#123;     return this.owner; &amp;#125;;function Stock(share)&amp;#123;">
 
 
 
@@ -129,13 +134,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/11/18/js-inheritance/"/>
 
 
 
 
 
-  <title>文蓉子的博客</title>
+  <title>javascript六种继承方法总结 | 文蓉子的博客</title>
   
 
 
@@ -160,9 +165,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-   page-home 
- ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -265,9 +268,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -297,9 +300,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/11/18/js-inheritance/" itemprop="url">javascript六种继承方法总结</a></h1>
+          <h1 class="post-title" itemprop="name headline">javascript六种继承方法总结</h1>
         
 
         <div class="post-meta">
@@ -371,9 +372,7 @@
       
 
       
-        
-          
-            <h1 id="（一）Prototype-Chaining"><a href="#（一）Prototype-Chaining" class="headerlink" title="（一）Prototype Chaining"></a>（一）Prototype Chaining</h1><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Asset</span>(<span class="params"></span>)</span>&#123; </span><br><span class="line">    <span class="keyword">this</span>.owner = <span class="string">"chris"</span></span><br><span class="line">&#125;</span><br><span class="line">Asset.prototype.getValue = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.owner; </span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Stock</span>(<span class="params">share</span>)</span>&#123; </span><br><span class="line">    <span class="keyword">this</span>.share = share;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//inherit from SuperType，overwrite the original Subtype prototype</span></span><br><span class="line">Stock.prototype = <span class="keyword">new</span> Asset();</span><br><span class="line">Stock.prototype.getShare = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.share; </span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">var</span> asset = <span class="keyword">new</span> Stock(<span class="number">11</span>)</span><br><span class="line">alert(asset.getValue());  <span class="comment">//chris</span></span><br></pre></td></tr></table></figure>
+        <h1 id="（一）Prototype-Chaining"><a href="#（一）Prototype-Chaining" class="headerlink" title="（一）Prototype Chaining"></a>（一）Prototype Chaining</h1><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Asset</span>(<span class="params"></span>)</span>&#123; </span><br><span class="line">    <span class="keyword">this</span>.owner = <span class="string">"chris"</span></span><br><span class="line">&#125;</span><br><span class="line">Asset.prototype.getValue = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.owner; </span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Stock</span>(<span class="params">share</span>)</span>&#123; </span><br><span class="line">    <span class="keyword">this</span>.share = share;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//inherit from SuperType，overwrite the original Subtype prototype</span></span><br><span class="line">Stock.prototype = <span class="keyword">new</span> Asset();</span><br><span class="line">Stock.prototype.getShare = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.share; </span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">var</span> asset = <span class="keyword">new</span> Stock(<span class="number">11</span>)</span><br><span class="line">alert(asset.getValue());  <span class="comment">//chris</span></span><br></pre></td></tr></table></figure>
 <h2 id="解读"><a href="#解读" class="headerlink" title="解读"></a>解读</h2><p>以上代码用构造函数定义了两个”类”。Stock继承了Asset。 这个继承方法的方法为重写Stock的prototype属性，使其有指向Asset.prototype的隐式原型。这个过程是通过Stock.prototype = new Asset()这句代码实现的。该句将Stock.prototype定义为Asset的实例。</p>
 <p>如此一来，Stock的instance就可以通过隐式原型链读取Asset的prototype属性。</p>
 <h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><p>该方法把Asset的构造函数属性都储存在Stock.prototype里。如此一来，一个实例对其属性的读取会直接同步到另一个实例里。这在以下代码得到体现：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Asset</span>(<span class="params"></span>)</span>&#123; </span><br><span class="line">    <span class="keyword">this</span>.owner = [<span class="string">"Chris"</span>];</span><br><span class="line">    <span class="keyword">this</span>.value = <span class="number">78</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Stock</span>(<span class="params"></span>)</span>&#123; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//inherit from SuperType </span></span><br><span class="line">Stock.prototype = <span class="keyword">new</span> Asset();</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> asset1 = <span class="keyword">new</span> Stock(); </span><br><span class="line">asset1.owner.push(<span class="string">"Minrong"</span>); </span><br><span class="line">asset1.value=<span class="number">80</span>;</span><br><span class="line">alert(asset1.owner); <span class="comment">//"Chris",”Minrong”</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> asset2 = <span class="keyword">new</span> Stock(); </span><br><span class="line">alert(asset2.owner); <span class="comment">//"Chris",”Minrong”</span></span><br><span class="line">alert(asset2.value); <span class="comment">//78</span></span><br><span class="line"><span class="built_in">console</span>.log(Stock.prototype.owner) <span class="comment">//"Chris",”Minrong”</span></span><br><span class="line"><span class="built_in">console</span>.log(Stock.prototype.value) <span class="comment">//78</span></span><br></pre></td></tr></table></figure></p>
@@ -392,8 +391,6 @@
 <h1 id="（六）parasitic-Combinational-Inheritance"><a href="#（六）parasitic-Combinational-Inheritance" class="headerlink" title="（六）parasitic Combinational Inheritance"></a>（六）parasitic Combinational Inheritance</h1><p>parasitic Combinational Inheritance是parasitic Inheritance和Combinational Inheritance的结合体。其目的在于解决Combinational Inheritance的缺点。这个方法的目的在于让subtype的prototype的type隐式原型指向supertype的原型链。在指向的过程中不需将subtype的prototype写为supertype的实例。如此以来就能解决Combinational Inheritance的问题。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">inheritPrototype</span>(<span class="params">subType, superType</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> prototype = <span class="built_in">Object</span>.create(superType.prototype); </span><br><span class="line">    prototype.constructor = subType;</span><br><span class="line">    subType.prototype = prototype;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Asset</span>(<span class="params">owner,value</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.owner = owner;</span><br><span class="line">    <span class="keyword">this</span>.value = value;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Asset.prototype.owner = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    alert(<span class="keyword">this</span>.owner);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Stock</span>(<span class="params">owner, value,share</span>) </span>&#123;</span><br><span class="line">    Asset.call(<span class="keyword">this</span>, owner,value);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.share = share;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">inheritPrototype(Stock, Asset);</span><br><span class="line"></span><br><span class="line">Stock.prototype.getShare = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    alert(<span class="keyword">this</span>.share);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> stock = <span class="keyword">new</span> Stock(<span class="string">"chris"</span>,<span class="number">1022</span>,<span class="number">11</span>);</span><br></pre></td></tr></table></figure></p>
 <h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p>《javascript高级程序设计》第三版</p>
 
-          
-        
       
     </div>
     
@@ -408,313 +405,38 @@
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/18/primitive-wrapper-type/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Wendy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="文蓉子的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/11/18/primitive-wrapper-type/" itemprop="url">javascript基本包装类型(Primitive Wrapper Type)</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-18T10:45:20-06:00">
-                2017-11-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript核心知识/" itemprop="url" rel="index">
-                    <span itemprop="name">javascript核心知识</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
+            <a href="/tags/javascript/" rel="tag"># javascript</a>
           
-
+            <a href="/tags/原型链/" rel="tag"># 原型链</a>
           
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在JavaScript中，string、number、boolean均为primitive类型。它们并非作为对象的引用类型，因此理论上没有属性以及方法。但是由于需要对这三种primitive类型进行操作，JavaScript使用Boolean(), Number(), String()这三种primitive包装类型去自动封装primitive类型，使其作为对象而拥有属性与方法。</p>
-<h1 id="封装过程"><a href="#封装过程" class="headerlink" title="封装过程"></a>封装过程</h1><p>以string为例，这种封装过程如下：</p>
-<p>当JavaScript遇到对string值进行属性访问或者方法调用时，会调用String()构造函数自动将该字符串封装成一个String对象。<br>JavaScript会访问这个新创建的对象的属性或者方法，并返回相应的结果。<br>属性访问或者方法调用结束后，JavaScript将立即销毁这个新创建的对象。<br>考虑下面的代码，<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> s = “Hello World”;</span><br><span class="line"><span class="built_in">console</span>.log(s.length);</span><br></pre></td></tr></table></figure></p>
-<p>以上代码对应的三步封装过程为：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> s = <span class="keyword">new</span> <span class="built_in">String</span>(“Hello World”);</span><br><span class="line"><span class="built_in">console</span>.log(s.length); </span><br><span class="line">s = <span class="literal">null</span>;</span><br></pre></td></tr></table></figure></p>
-<h1 id="alert"><a href="#alert" class="headerlink" title="alert"></a>alert</h1><p>需要注意的是，尽管javascript的自动封装机制能让string类型访问String对象的属性,但是却不能给这个string类型赋予属性。因为说到底string是primitive类型，给primitive类型赋予属性或方法是没有意义的。这在以下代码有所体现。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> s = <span class="string">"Hello World"</span>;</span><br><span class="line">s.hw = <span class="number">9</span>;</span><br><span class="line"><span class="built_in">console</span>.log(s.hw); <span class="comment">//undefined﻿​</span></span><br></pre></td></tr></table></figure>
-<h1 id="参考："><a href="#参考：" class="headerlink" title="参考："></a>参考：</h1><p> <a href="http://blog.shaochuancs.com/javascript-primitive-boxing/" target="_blank" rel="noopener">JavaScript实验：Primitive对象封装</a></p>
-<p>《javascript高级程序设计》第三版</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
       
 
       
       
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
       
 
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/18/prototype-chain-relation/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Wendy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="文蓉子的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/11/18/prototype-chain-relation/" itemprop="url">原型链—-关系图解释</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
             
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-18T10:20:23-06:00">
-                2017-11-18
-              </time>
+              <a href="/2017/11/18/primitive-wrapper-type/" rel="next" title="javascript基本包装类型(Primitive Wrapper Type)">
+                <i class="fa fa-chevron-left"></i> javascript基本包装类型(Primitive Wrapper Type)
+              </a>
             
+          </div>
 
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
             
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/javascript核心知识/" itemprop="url" rel="index">
-                    <span itemprop="name">javascript核心知识</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
+          </div>
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          
-            <p>我们可以这么总结这张图所展示的内容：</p>
-<ol>
-<li>f1, f2是function Foo()的实例，所以它们的[[prototype]]指向Foo.prototype。o1，o2是function Object()的实例，所以它们的[[prototype]]是Object.prototype。因为function Object()和function Foo()是function Function()的实例, 所以它们的[[prototype]]属性是Function.prototype。</li>
-<li>每个对象都有一个<strong>proto</strong>属性，指向创建该对象的函数的prototype。</li>
-<li>访问一个对象的属性时，先在基本属性中查找，如果没有，再沿着<strong>proto</strong>这条链向上找，这就是原型链。</li>
-<li>每个函数都有prototype这个属性。</li>
-</ol>
-<p><img src="/asset/prototype_chain_relation.jpg" alt=""></p>
-<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference:"></a>Reference:</h2><p><a href="http://www.cnblogs.com/wangfupeng1988/p/3977924.html" target="_blank" rel="noopener">深入理解javascript原型和闭包</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -724,174 +446,11 @@
   </article>
 
 
-    
-      
 
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/17/Hexo-GitHub-page/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Wendy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="文蓉子的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/11/17/Hexo-GitHub-page/" itemprop="url">搭建Hexo + GitHub page博客总结</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-17T23:01:39-06:00">
-                2017-11-17
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/知识工具总结/" itemprop="url" rel="index">
-                    <span itemprop="name">知识工具总结</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="概括"><a href="#概括" class="headerlink" title="概括"></a>概括</h1><ul>
-<li>创建Github page库</li>
-<li>安装Hexo和配置Hexo文件</li>
-<li>设置ssh公钥</li>
-<li>部署博客到github</li>
-</ul>
-<h1 id="创建Github-page库"><a href="#创建Github-page库" class="headerlink" title="创建Github page库"></a>创建Github page库</h1><p>在github创建一个Github page库。不需要增加branch。</p>
-<p>GitHub Pages 是用来存放个人主页的仓库，每个用户只能有一个。仓库的名字必须是username.github.io。你可以通过<a href="http://username.github.io" target="_blank" rel="noopener">http://username.github.io</a> 来访问你的个人主页。</p>
-<h1 id="安装Hexo和配置Hexo文件"><a href="#安装Hexo和配置Hexo文件" class="headerlink" title="安装Hexo和配置Hexo文件"></a>安装Hexo和配置Hexo文件</h1><p>安装和配置Hexo的教程在<a href="https://hexo.io/" target="_blank" rel="noopener">Hexo官网</a>写得非常详细，里面的视频教程讲得非常好。建议跟着视频走，然后再看帮助文档。</p>
-<p>在配置themes的时候建议尽量选择比较多star的theme（这样基本能保证跟得上hexo更新）。 一般来说每个theme都在它们的github repo有说明怎么进行theme配置，这也是要仔细阅读的。这是我采用的<a href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="noopener">next theme</a>。</p>
-<h1 id="设置ssh公钥"><a href="#设置ssh公钥" class="headerlink" title="设置ssh公钥"></a>设置ssh公钥</h1><p>1.打开terminal，用<code>cd ~/.ssh</code>检查我们电脑上是否有ssh公钥。如果返回No such file or directory或者在<code>~/.ssh</code>这个文件夹里没有<code>id_rsa.pub</code>这个文件夹，我们就需要生成新的SSH公钥了。有公钥但未在github设置的可跳至第三步。若两者都设置了就直接跳到部署博客部分。</p>
-<p>2.用<code>$ ssh-keygen -t rsa -C &quot;邮件地址@youremail.com&quot;</code>生成新公钥，@处填写你的邮箱。接着问你放置的文件夹时，用默认文件夹就好（直接回车）。接着会让你设置密码及确定密码。注意密码必须5位或以上。</p>
-<p>3.接着你就可以进入<code>~/.ssh</code>这个文件夹，打开id_rsa.pub这个文档。将里面的一串公钥复制出来。然后去你的github-Account Settings—&gt;SSH Public keys —&gt; add another public keys，然后粘贴进去确认就行了。</p>
-<p>4.用<code>ssh -T git@GitHub.com</code>查看是否设置成功。如返回</p>
-<blockquote>
-<p>The authenticity of host ‘GitHub.com (207.97.227.239)’ can’t be established. RSA key fingerprint is 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48.<br>Are you sure you want to continue connecting (yes/no)?</p>
-</blockquote>
-<p>这时输入yes就好。（若对其中原理感兴趣的可以去看看<a href="http://www.ruanyifeng.com/blog/2011/12/ssh_remote_login.html" target="_blank" rel="noopener">SSH原理与运用</a>这篇博客）</p>
-<p>接着如果我们看到<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hi cnfeat! You&apos;ve successfully authenticated, but GitHub does not provide shell access.</span><br></pre></td></tr></table></figure></p>
-<p>那就是设置成功了。</p>
-<h1 id="部署博客到github"><a href="#部署博客到github" class="headerlink" title="部署博客到github"></a>部署博客到github</h1><p>1.进入博客文件夹安装一个远程部署的扩展<br><code>$ npm install hexo-deployer-git --save</code></p>
-<p>2.在config文档的deploy属性里加入你的github page的地址<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: git@github.com:user/user.github.io.git</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure></p>
-<p>3.最后部署到远端<br><code>$ hexo generate --deploy</code></p>
-<h1 id="command-cheat-sheet"><a href="#command-cheat-sheet" class="headerlink" title="command cheat sheet"></a>command cheat sheet</h1><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//发表博文</span></span><br><span class="line">$ hexo <span class="keyword">new</span> <span class="string">"postName"</span></span><br><span class="line"><span class="comment">//example: </span></span><br><span class="line">hexo <span class="keyword">new</span> “js i” </span><br><span class="line"><span class="comment">//默认创建一个js-i.md文件 在_posts文件里. 这个默认属性 可以在Writing.default_layout:属性中改变。若改为draft，new命令会把文章放在_drafts文件夹中。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//新建草稿</span></span><br><span class="line">$ hexo <span class="keyword">new</span> draft <span class="string">"postName"</span> <span class="comment">//hexo会创建一个draft文件，并把文档放进去</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//查看草稿在在本地server运行状况</span></span><br><span class="line">$ hexo server --draft</span><br><span class="line"></span><br><span class="line"><span class="comment">//发表草稿为博文</span></span><br><span class="line">$ hexo publish <span class="string">"postName"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//新建单独页面</span></span><br><span class="line">$ hexo <span class="keyword">new</span> page <span class="string">"pageName"</span> </span><br><span class="line"><span class="comment">//该页面会有创建一个单独页面，里面有index.md你可以编辑</span></span><br></pre></td></tr></table></figure>
-          
-        
+    <div class="post-spread">
       
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
   </div>
-  
-  
-  
-  </article>
-
-
-    
-  </section>
-
-  
 
 
           </div>
@@ -899,6 +458,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -919,8 +482,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/avatar.gif"
@@ -982,6 +554,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#（一）Prototype-Chaining"><span class="nav-number">1.</span> <span class="nav-text">（一）Prototype Chaining</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#解读"><span class="nav-number">1.1.</span> <span class="nav-text">解读</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缺点"><span class="nav-number">1.2.</span> <span class="nav-text">缺点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#（二）constructor-Stealing"><span class="nav-number">2.</span> <span class="nav-text">（二）constructor Stealing</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#解读-1"><span class="nav-number">2.1.</span> <span class="nav-text">解读</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#传参"><span class="nav-number">2.2.</span> <span class="nav-text">传参</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缺点-1"><span class="nav-number">2.3.</span> <span class="nav-text">缺点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#（三）Combination-Inheritance"><span class="nav-number">3.</span> <span class="nav-text">（三）Combination Inheritance</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#缺点-2"><span class="nav-number">3.1.</span> <span class="nav-text">缺点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#（四）prototypal-Inheritance"><span class="nav-number">4.</span> <span class="nav-text">（四）prototypal Inheritance</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#解读-2"><span class="nav-number">4.1.</span> <span class="nav-text">解读</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Object-create"><span class="nav-number">4.2.</span> <span class="nav-text">Object.create()</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#（五）parasitic-Inheritance"><span class="nav-number">5.</span> <span class="nav-text">（五）parasitic Inheritance</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#（六）parasitic-Combinational-Inheritance"><span class="nav-number">6.</span> <span class="nav-text">（六）parasitic Combinational Inheritance</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考："><span class="nav-number">7.</span> <span class="nav-text">参考：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -1095,10 +683,10 @@
   
 
   
-    <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
 <script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
 
-  
+
 
   
 
