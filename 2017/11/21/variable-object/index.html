@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="javascript,变量对象," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="notes：本文在汤姆大叔的译文 深入理解JavaScript系列（12）：变量对象（Variable Object的基础上按照自己的理解做了一些小的改动  介绍JavaScript编程的时候总避免不了声明函数和变量，以成功构建我们的系统，但是解释器是如何并且在什么地方去查找这些函数和变量呢？我们引用我们需要的对象的时">
+<meta name="keywords" content="javascript,变量对象">
+<meta property="og:type" content="article">
+<meta property="og:title" content="变量对象（Variable Object）">
+<meta property="og:url" content="http://yoursite.com/2017/11/21/variable-object/index.html">
+<meta property="og:site_name" content="文蓉子的博客">
+<meta property="og:description" content="notes：本文在汤姆大叔的译文 深入理解JavaScript系列（12）：变量对象（Variable Object的基础上按照自己的理解做了一些小的改动  介绍JavaScript编程的时候总避免不了声明函数和变量，以成功构建我们的系统，但是解释器是如何并且在什么地方去查找这些函数和变量呢？我们引用我们需要的对象的时候究竟发生了什么？ 数据声明变量对象(缩写为VO)是一个与执行上下文相关的特殊">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-11-22T03:03:31.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="变量对象（Variable Object）">
+<meta name="twitter:description" content="notes：本文在汤姆大叔的译文 深入理解JavaScript系列（12）：变量对象（Variable Object的基础上按照自己的理解做了一些小的改动  介绍JavaScript编程的时候总避免不了声明函数和变量，以成功构建我们的系统，但是解释器是如何并且在什么地方去查找这些函数和变量呢？我们引用我们需要的对象的时候究竟发生了什么？ 数据声明变量对象(缩写为VO)是一个与执行上下文相关的特殊">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/11/21/variable-object/"/>
+
+
+
+
+
+  <title>变量对象（Variable Object） | 文蓉子的博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">文蓉子的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">技术知识笔记</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/21/variable-object/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wendy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="文蓉子的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">变量对象（Variable Object）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-21T21:01:25-06:00">
+                2017-11-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/javascript核心知识/" itemprop="url" rel="index">
+                    <span itemprop="name">javascript核心知识</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>notes：本文在汤姆大叔的译文 <a href="http://www.cnblogs.com/TomXu/archive/2012/01/16/2309728.html" target="_blank" rel="noopener">深入理解JavaScript系列（12）：变量对象（Variable Object</a>的基础上按照自己的理解做了一些小的改动</p>
+</blockquote>
+<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>JavaScript编程的时候总避免不了声明函数和变量，以成功构建我们的系统，但是解释器是如何并且在什么地方去查找这些函数和变量呢？我们引用我们需要的对象的时候究竟发生了什么？</p>
+<h1 id="数据声明"><a href="#数据声明" class="headerlink" title="数据声明"></a>数据声明</h1><p>变量对象(缩写为VO)是一个与执行上下文相关的特殊对象，VO也是执行上下文的属性(property)，它存储着在上下文中声明的的变量，函数声明，函数参数。如下伪码所示：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">activeExecutionContext = &#123;</span><br><span class="line">  VO: &#123;</span><br><span class="line">    <span class="comment">// 上下文数据（变量 (var--即变量声明), 函数声明, 函数参数)</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>当我们声明一个变量或一个函数的时候，我们也在创建VO新属性， 例如：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="number">10</span>;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params">x</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> b = <span class="number">20</span>;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line">test(<span class="number">30</span>);</span><br></pre></td></tr></table></figure></p>
+<p>对应的变量对象是：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 全局上下文的变量对象</span></span><br><span class="line">VO(globalContext) = &#123;</span><br><span class="line">  a: <span class="number">10</span>,</span><br><span class="line">  test: &lt;reference to function&gt;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line">// test函数上下文的变量对象</span><br><span class="line">VO(test functionContext) = &#123;</span><br><span class="line">  x: 30,</span><br><span class="line">  b: 20</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h1 id="执行上下文中的变量对象"><a href="#执行上下文中的变量对象" class="headerlink" title="执行上下文中的变量对象"></a>执行上下文中的变量对象</h1><p>变量对象即是：</p>
+<ul>
+<li>全局对象 (在全局上下文)</li>
+<li>活动对象-activation object (在函数上下文)</li>
+</ul>
+<h2 id="全局上下文中的变量对象（全局对象）"><a href="#全局上下文中的变量对象（全局对象）" class="headerlink" title="全局上下文中的变量对象（全局对象）"></a>全局上下文中的变量对象（全局对象）</h2><p>全局对象初始创建阶段将Math、String、Date、parseInt作为自身属性，等属性初始化，同样也可以有额外创建的其它对象作为属性。在DOM中，全局对象的window属性就可以引用全局对象自身：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">global = &#123;</span><br><span class="line">  <span class="built_in">Math</span>: &lt;...&gt;,</span><br><span class="line">  String: &lt;...&gt;</span><br><span class="line">  ...</span><br><span class="line">  ...</span><br><span class="line">  window: global //引用自身</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>全局对象是不能通过名称直接访问的。不过全局上下文的this即是全局对象。而window只是全局对象的一个属性。如下<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.window;   <span class="comment">//window</span></span><br><span class="line"><span class="built_in">window</span>.this;   <span class="comment">//undefined</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="函数上下文中的变量对象"><a href="#函数上下文中的变量对象" class="headerlink" title="函数上下文中的变量对象"></a>函数上下文中的变量对象</h2><p>活动对象是在进入函数上下文时刻被创建的，它通过函数的arguments属性初始化。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">AO = &#123;</span><br><span class="line">  <span class="built_in">arguments</span>: &lt;ArgO&gt;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>参数对象是活动对象的一个属性，它包括如下属性：</p>
+<ol>
+<li>callee — 指向当前函数的引用</li>
+<li>length — 真正传递的参数个数</li>
+<li>properties - 按参数列表从左到右排列成array。形参和实参共享参数</li>
+</ol>
+<p>例子：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params">x, y, z</span>) </span>&#123;</span><br><span class="line"> </span><br><span class="line">  <span class="comment">// 声明的函数参数数量 (x, y, z)</span></span><br><span class="line">  alert(foo.length); <span class="comment">// 3</span></span><br><span class="line"> </span><br><span class="line">  <span class="comment">// 真正传进来的参数个数(only x, y)</span></span><br><span class="line">  alert(<span class="built_in">arguments</span>.length); <span class="comment">// 2</span></span><br><span class="line"> </span><br><span class="line">  <span class="comment">// 参数的callee是函数自身</span></span><br><span class="line">  alert(<span class="built_in">arguments</span>.callee === foo); <span class="comment">// true</span></span><br><span class="line"> </span><br><span class="line">  <span class="comment">// 参数共享</span></span><br><span class="line">  alert(x === <span class="built_in">arguments</span>[<span class="number">0</span>]); <span class="comment">// true</span></span><br><span class="line">  alert(x); <span class="comment">// 10</span></span><br><span class="line"> </span><br><span class="line">  <span class="built_in">arguments</span>[<span class="number">0</span>] = <span class="number">20</span>;</span><br><span class="line">  alert(x); <span class="comment">// 20</span></span><br><span class="line"> </span><br><span class="line">  x = <span class="number">30</span>;</span><br><span class="line">  alert(<span class="built_in">arguments</span>[<span class="number">0</span>]); <span class="comment">// 30</span></span><br><span class="line"> </span><br><span class="line">  <span class="comment">// 不过，没有传进来的参数z，和参数的第3个索引值是不共享的</span></span><br><span class="line"></span><br><span class="line">  z = <span class="number">40</span>;</span><br><span class="line">  alert(<span class="built_in">arguments</span>[<span class="number">2</span>]); <span class="comment">// undefined</span></span><br><span class="line"> </span><br><span class="line">  <span class="built_in">arguments</span>[<span class="number">2</span>] = <span class="number">50</span>;</span><br><span class="line">  alert(z); <span class="comment">// 40</span></span><br><span class="line"> </span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">foo(<span class="number">10</span>, <span class="number">20</span>);</span><br></pre></td></tr></table></figure></p>
+<h1 id="处理上下文代码的2个阶段"><a href="#处理上下文代码的2个阶段" class="headerlink" title="处理上下文代码的2个阶段"></a>处理上下文代码的2个阶段</h1><p>有两个阶段：</p>
+<ul>
+<li>进入执行上下文</li>
+<li>代码执行</li>
+</ul>
+<h2 id="进入执行上下文"><a href="#进入执行上下文" class="headerlink" title="进入执行上下文"></a>进入执行上下文</h2><p>当进入执行上下文(代码执行之前)时，VO里已经包含了下列属性(前面已经说了)：</p>
+<ul>
+<li><p>函数的所有形参(如果我们是在函数执行上下文中)</p>
+</li>
+<li><ul>
+<li>由名称和对应值组成的一个变量对象的属性被创建；没有传递对应参数的话，那么由名称和undefined值组成的一种变量对象的属性也将被创建。</li>
+</ul>
+</li>
+<li><p>所有函数声明(FunctionDeclaration, FD)</p>
+</li>
+<li><ul>
+<li>由名称和对应值（函数对象(function-object)）组成一个变量对象的属性被创建；如果变量对象已经存在相同名称的属性，则完全替换这个属性。</li>
+</ul>
+</li>
+<li><p>所有变量声明(var, VariableDeclaration)</p>
+</li>
+<li><ul>
+<li>由名称和对应值（undefined）组成一个变量对象的属性被创建；如果变量名称跟已经声明的形式参数或函数相同，则变量声明不会干扰已经存在的这类属性。</li>
+</ul>
+</li>
+</ul>
+<p>一个例子：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> c = <span class="number">10</span>;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">d</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line">  <span class="keyword">var</span> e = <span class="function"><span class="keyword">function</span> <span class="title">_e</span>(<span class="params"></span>) </span>&#123;&#125;;</span><br><span class="line">  (<span class="function"><span class="keyword">function</span> <span class="title">x</span>(<span class="params"></span>) </span>&#123;&#125;);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">test(<span class="number">10</span>); <span class="comment">// call</span></span><br></pre></td></tr></table></figure></p>
+<p>当进入带有参数10的test函数上下文时，AO表现为如下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">AO(test) = &#123;</span><br><span class="line">  a: <span class="number">10</span>,</span><br><span class="line">  b: <span class="literal">undefined</span>,</span><br><span class="line">  c: <span class="literal">undefined</span>,</span><br><span class="line">  d: &lt;reference to FunctionDeclaration "d"&gt;</span><br><span class="line">  e: undefined</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>注意，AO里并不包含函数“x”。这是因为“x” 是一个函数表达式(FunctionExpression, 缩写为 FE) 而不是函数声明，函数表达式不会影响VO。 不管怎样，函数“_e” 同样也是函数表达式，但是就像我们下面将看到的那样，因为它分配给了变量 “e”，所以它可以通过名称“e”来访问。 </p>
+<h2 id="代码执行"><a href="#代码执行" class="headerlink" title="代码执行"></a>代码执行</h2><p>这个周期内，AO/VO已经拥有了属性(不过，并不是所有的属性都有值，大部分属性的值还是系统默认的初始值undefined )。</p>
+<p>还是前面那个例子, AO/VO在代码解释期间被修改如下：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">AO[<span class="string">'c'</span>] = <span class="number">10</span>;</span><br><span class="line">AO[<span class="string">'e'</span>] = &lt;reference to FunctionExpression "_e"&gt;;</span><br></pre></td></tr></table></figure></p>
+<p>再次注意，因为FunctionExpression“_e”保存到了已声明的变量“e”上，所以它仍然存在于内存中。而FunctionExpression “x”却不存在于AO/VO中，也就是说如果我们想尝试调用“x”函数，不管在函数定义之前还是之后，都会出现一个错误“x is not defined”，未保存的函数表达式只有在它自己的定义或递归中才能被调用。<br>另一个经典例子：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">alert(x); <span class="comment">// function</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">var</span> x = <span class="number">10</span>;</span><br><span class="line">alert(x); <span class="comment">// 10</span></span><br><span class="line"> </span><br><span class="line">x = <span class="number">20</span>;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">x</span>(<span class="params"></span>) </span>&#123;&#125;;</span><br><span class="line"> </span><br><span class="line">alert(x); <span class="comment">// 20</span></span><br></pre></td></tr></table></figure></p>
+<p>为什么第一个alert “x” 的返回值是function，而且它还是在“x” 声明之前访问的“x” 的？为什么不是10或20呢？因为正如我们在上一个阶段所说，变量声明在顺序上跟在函数声明和形式参数声明之后，而且在这个进入上下文阶段，变量声明不会干扰VO中已经存在的同名函数声明或形式参数声明，因此，在进入上下文时，VO的结构如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">VO = &#123;&#125;;</span><br><span class="line"> </span><br><span class="line">VO[<span class="string">'x'</span>] = &lt;reference to FunctionDeclaration "x"&gt;</span><br><span class="line"> </span><br><span class="line">// 找到var x = 10;</span><br><span class="line">// 如果function "x"没有已经声明的话</span><br><span class="line">// 这时候"x"的值应该是undefined</span><br><span class="line">// 但是这个case里变量声明没有影响同名的function的值</span><br><span class="line"> </span><br><span class="line">VO['x'] = &lt;the value is not disturbed, still function&gt;</span><br></pre></td></tr></table></figure>
+<p>紧接着，在执行代码阶段，VO做如下修改：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">VO[<span class="string">'x'</span>] = <span class="number">10</span>;</span><br><span class="line">VO[<span class="string">'x'</span>] = <span class="number">20</span>;</span><br></pre></td></tr></table></figure></p>
+<p>我们可以在第二、三个alert看到这个效果。</p>
+<p>在下面的例子里我们可以再次看到，变量是在进入上下文阶段放入VO中的。(因为，虽然else部分代码永远不会执行，但是不管怎样，变量“b”仍然存在于VO中。)</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> a = <span class="number">1</span>;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="keyword">var</span> b = <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">alert(a); <span class="comment">// 1</span></span><br><span class="line">alert(b); <span class="comment">// undefined,不是b没有声明，而是b的值是undefined</span></span><br></pre></td></tr></table></figure>
+<h1 id="关于变量"><a href="#关于变量" class="headerlink" title="关于变量"></a>关于变量</h1><p>通常，各类文章和JavaScript相关的书籍都声称：“不管是使用var关键字(在全局上下文)还是不使用var关键字(在任何地方)，都可以声明一个变量”。请记住，这是错误的概念：任何时候，变量只能通过使用var关键字才能声明。</p>
+<p>下面的赋值语句：<br><code>a = 10;</code><br>这仅仅是给全局对象创建了一个新属性(但它不是变量)。“不是变量”并不是说它不能被改变，而是指它不符合ECMAScript规范中的变量概念，所以它“不是变量”(它之所以能成为全局对象的属性，完全是因为VO(globalContext) === global)。</p>
+<p>让我们通过下面的实例看看具体的区别吧：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">alert(a); <span class="comment">// undefined</span></span><br><span class="line">alert(b); <span class="comment">// "b" 没有声明</span></span><br><span class="line"> </span><br><span class="line">b = <span class="number">10</span>;</span><br><span class="line"><span class="keyword">var</span> a = <span class="number">20</span>;</span><br></pre></td></tr></table></figure></p>
+<p>所有根源仍然是VO和进入上下文阶段和代码执行阶段：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">进入上下文阶段：</span><br><span class="line"></span><br><span class="line">VO = &#123;</span><br><span class="line">  a: <span class="literal">undefined</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>我们可以看到，因为“b”不是一个变量，所以在这个阶段根本就没有“b”，“b”将只在代码执行阶段才会出现(但是在我们这个例子里，还没有到那就已经出错了)。</p>
+<p>让我们改变一下例子代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">alert(a); // undefined, 这个大家都知道，</span><br><span class="line"> </span><br><span class="line">b = 10;</span><br><span class="line">alert(b); // 10, 代码执行阶段创建</span><br><span class="line"> </span><br><span class="line">var a = 20;</span><br><span class="line">alert(a); // 20, 代码执行阶段修改</span><br></pre></td></tr></table></figure></p>
+<p>关于变量，还有一个重要的知识点。变量相对于简单属性来说，变量有一个特性(attribute)：{DontDelete},这个特性的含义就是不能用delete操作符直接删除变量属性。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="number">10</span>;</span><br><span class="line">alert(<span class="built_in">window</span>.a); <span class="comment">// 10</span></span><br><span class="line"> </span><br><span class="line">alert(<span class="keyword">delete</span> a); <span class="comment">// true</span></span><br><span class="line"> </span><br><span class="line">alert(<span class="built_in">window</span>.a); <span class="comment">// undefined</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">var</span> b = <span class="number">20</span>;</span><br><span class="line">alert(<span class="built_in">window</span>.b); <span class="comment">// 20</span></span><br><span class="line"> </span><br><span class="line">alert(<span class="keyword">delete</span> b); <span class="comment">// false</span></span><br><span class="line"> </span><br><span class="line">alert(<span class="built_in">window</span>.b); <span class="comment">// still 20</span></span><br></pre></td></tr></table></figure></p>
+<p>但是这个规则在有个上下文里不起走样，那就是eval上下文，变量没有{DontDelete}特性。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">eval</span>(<span class="string">'var a = 10;'</span>);</span><br><span class="line">alert(<span class="built_in">window</span>.a); <span class="comment">// 10</span></span><br><span class="line"> </span><br><span class="line">alert(<span class="keyword">delete</span> a); <span class="comment">// true</span></span><br><span class="line"> </span><br><span class="line">alert(<span class="built_in">window</span>.a); <span class="comment">// undefined</span></span><br></pre></td></tr></table></figure></p>
+<h1 id="Reference："><a href="#Reference：" class="headerlink" title="Reference："></a>Reference：</h1><p><a href="https://softwareengineering.stackexchange.com/questions/189967/what-is-an-activation-object-in-javascript" target="_blank" rel="noopener">What is an Activation object in JavaScript?—-stack overflow</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/javascript/" rel="tag"># javascript</a>
+          
+            <a href="/tags/变量对象/" rel="tag"># 变量对象</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/19/this/" rel="next" title="this的取值">
+                <i class="fa fa-chevron-left"></i> this的取值
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Wendy" />
+          <p class="site-author-name" itemprop="name">Wendy</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#介绍"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据声明"><span class="nav-number">2.</span> <span class="nav-text">数据声明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#执行上下文中的变量对象"><span class="nav-number">3.</span> <span class="nav-text">执行上下文中的变量对象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#全局上下文中的变量对象（全局对象）"><span class="nav-number">3.1.</span> <span class="nav-text">全局上下文中的变量对象（全局对象）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数上下文中的变量对象"><span class="nav-number">3.2.</span> <span class="nav-text">函数上下文中的变量对象</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#处理上下文代码的2个阶段"><span class="nav-number">4.</span> <span class="nav-text">处理上下文代码的2个阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#进入执行上下文"><span class="nav-number">4.1.</span> <span class="nav-text">进入执行上下文</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码执行"><span class="nav-number">4.2.</span> <span class="nav-text">代码执行</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关于变量"><span class="nav-number">5.</span> <span class="nav-text">关于变量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference："><span class="nav-number">6.</span> <span class="nav-text">Reference：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wendy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
