@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="javascript,闭包," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="notes：本文在汤姆大叔的译文 深入理解JavaScript系列（12）：闭包（Closures）的基础上按照自己的理解作了一些微小的改动  概论及问题函数式编程基本概念在函数式语言中（ECMAScript也支持这种风格），函数即是数据。就比方说，函数可以赋值给变量，可以当参数传递给其他函数，还可以从函数里返回等等。">
+<meta name="keywords" content="javascript,闭包">
+<meta property="og:type" content="article">
+<meta property="og:title" content="闭包">
+<meta property="og:url" content="http://yoursite.com/2017/11/25/closures/index.html">
+<meta property="og:site_name" content="文蓉子的博客">
+<meta property="og:description" content="notes：本文在汤姆大叔的译文 深入理解JavaScript系列（12）：闭包（Closures）的基础上按照自己的理解作了一些微小的改动  概论及问题函数式编程基本概念在函数式语言中（ECMAScript也支持这种风格），函数即是数据。就比方说，函数可以赋值给变量，可以当参数传递给其他函数，还可以从函数里返回等等。 1.函数式参数–functional argument（“Funarg”）">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-11-25T16:46:21.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="闭包">
+<meta name="twitter:description" content="notes：本文在汤姆大叔的译文 深入理解JavaScript系列（12）：闭包（Closures）的基础上按照自己的理解作了一些微小的改动  概论及问题函数式编程基本概念在函数式语言中（ECMAScript也支持这种风格），函数即是数据。就比方说，函数可以赋值给变量，可以当参数传递给其他函数，还可以从函数里返回等等。 1.函数式参数–functional argument（“Funarg”）">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/11/25/closures/"/>
+
+
+
+
+
+  <title>闭包 | 文蓉子的博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">文蓉子的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">技术知识笔记</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/25/closures/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wendy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="文蓉子的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">闭包</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-25T10:43:45-06:00">
+                2017-11-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/javascript核心知识/" itemprop="url" rel="index">
+                    <span itemprop="name">javascript核心知识</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>notes：本文在汤姆大叔的译文 <a href="http://www.cnblogs.com/TomXu/archive/2012/01/31/2330252.html" target="_blank" rel="noopener">深入理解JavaScript系列（12）：闭包（Closures）</a>的基础上按照自己的理解作了一些微小的改动</p>
+</blockquote>
+<h1 id="概论及问题"><a href="#概论及问题" class="headerlink" title="概论及问题"></a>概论及问题</h1><h2 id="函数式编程基本概念"><a href="#函数式编程基本概念" class="headerlink" title="函数式编程基本概念"></a>函数式编程基本概念</h2><p>在函数式语言中（ECMAScript也支持这种风格），函数即是数据。就比方说，函数可以赋值给变量，可以当参数传递给其他函数，还可以从函数里返回等等。</p>
+<p>1.<strong>函数式参数</strong>–functional argument（“Funarg”） —— 是指值为函数的参数。</p>
+<p>2.接受函数式参数的函数称为<strong>高阶函数</strong>（high-order function 简称：HOF）。还可以称作：函数式函数</p>
+<p>3.以函数为返回值的函数称为带函数值的函数（functions with functional value or function valued functions）。</p>
+<p>4.可以以正常数据形式存在的函数（当参数传递，接受函数式参数或者以函数值返回）都称作 <strong>第一类函数</strong>（一般说第一类对象）。在ECMAScript中，所有的函数都是第一类对象。</p>
+<p>5.接受自己作为参数的函数，称为<strong>自应用函数</strong>（auto-applicative function 或者 self-applicative function）<br>以下是一个自应用函数的例子：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span> <span class="title">selfApplicative</span>(<span class="params">funArg</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (funArg &amp;&amp; funArg === selfApplicative) &#123;</span><br><span class="line">    alert(<span class="string">'self-applicative'</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  selfApplicative(selfApplicative);</span><br><span class="line"></span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure></p>
+<p>6.以自己为返回值的函数称为自复制函数（auto-replicative function 或者 self-replicative function）。<br>以下是一个自复制函数的例子：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span> <span class="title">selfReplicative</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> selfReplicative;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure></p>
+<p>自复制函数的其中一个比较有意思的模式是让仅接受集合的一个项作为参数来接受从而代替接受集合本身。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 接受集合的函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">registerModes</span>(<span class="params">modes</span>) </span>&#123;</span><br><span class="line">  modes.forEach(registerMode, modes);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用法</span></span><br><span class="line">registerModes([<span class="string">'roster'</span>, <span class="string">'accounts'</span>, <span class="string">'groups'</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 自复制函数的声明</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">modes</span>(<span class="params">mode</span>) </span>&#123;</span><br><span class="line">  registerMode(mode); <span class="comment">// 注册一个mode</span></span><br><span class="line">  <span class="keyword">return</span> modes; <span class="comment">// 返回函数自身</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用法，modes链式调用</span></span><br><span class="line">modes(<span class="string">'roster'</span>)(<span class="string">'accounts'</span>)(<span class="string">'groups'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//有点类似：jQueryObject.addClass("a").toggle().removClass("b")</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="函数式参数问题"><a href="#函数式参数问题" class="headerlink" title="函数式参数问题"></a>函数式参数问题</h2><p>问题出现在自由变量中，自由变量是指在函数中使用的，但既不是函数参数也不是函数的局部变量的变量。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">testFn</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> localVar = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">innerFn</span>(<span class="params">innerParam</span>) </span>&#123;</span><br><span class="line">    alert(innerParam + localVar);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> innerFn;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> someFn = testFn();</span><br><span class="line">someFn(<span class="number">20</span>); <span class="comment">// 30</span></span><br></pre></td></tr></table></figure></p>
+<p>在上述例子中，对于innerFn来说，localVar就是自由变量。</p>
+<p>对于采用stack来存储局部变量的函数而言，当testFn函数调用结束后，其局部变量都会从stack中移除。这样一来，当从外部对innerFn进行函数调用的时候，就会发生错误（因为localVar变量已经不存在了）。</p>
+<p>上述例子中，要想将innerFn以返回值返回根本是不可能的。因为它也是testFn函数的局部变量，也会随着testFn的返回而移除。</p>
+<p>看如下例子（伪代码）：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> z = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  alert(z);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foo(); <span class="comment">// 10 – 使用静态和动态作用域的时候</span></span><br><span class="line"></span><br><span class="line">(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> z = <span class="number">20</span>;</span><br><span class="line">  foo(); <span class="comment">// 10 – 使用静态作用域, 20 – 使用动态作用域</span></span><br><span class="line"></span><br><span class="line">&#125;)();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将foo作为参数的时候是一样的</span></span><br><span class="line">(<span class="function"><span class="keyword">function</span> (<span class="params">funArg</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> z = <span class="number">30</span>;</span><br><span class="line">  funArg(); <span class="comment">// 10 – 静态作用域, 30 – 动态作用域</span></span><br><span class="line"></span><br><span class="line">&#125;)(foo);</span><br></pre></td></tr></table></figure></p>
+<p>我们看到，采用动态作用域，变量（标识符）的系统是通过变量动态栈来管理的。因此，自由变量是在当前活跃的动态链中查询的，而不是在函数创建的时候保存起来的静态作用域链中查询的。</p>
+<p>这样就会产生冲突。比方说，即使Z仍然存在（与之前从栈中移除变量的例子相反），还是会有这样一个问题： 在不同的函数调用中，Z的值到底取哪个呢（从哪个上下文，哪个作用域中查询）？</p>
+<p>为了解决上述问题，就引入了 闭包的概念。</p>
+<h1 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h1><p>让我们来看下面这个例子（伪代码）：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x = <span class="number">20</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  alert(x); <span class="comment">// 自由变量"x" == 20</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>以下为对应的foo函数Closure的伪代码<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 为foo闭包</span></span><br><span class="line">fooClosure = &#123;</span><br><span class="line">  call: foo <span class="comment">// 引用到function</span></span><br><span class="line">  lexicalEnvironment: &#123;<span class="attr">x</span>: <span class="number">20</span>&#125; <span class="comment">// 搜索上下文</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>在ECMAScript中，“foo”函数已经有了一个内部属性——创建该函数上下文的作用域链。</p>
+<p>“lexical”通常是省略的。上述例子中是为了强调在闭包创建的同时，上下文的数据就会保存起来。当下次调用该函数的时候，自由变量就可以在保存的（闭包）上下文中找到了，</p>
+<h2 id="ECMAScript闭包的实现"><a href="#ECMAScript闭包的实现" class="headerlink" title="ECMAScript闭包的实现"></a>ECMAScript闭包的实现</h2><p>讨论完理论部分，接下来让我们来介绍下ECMAScript中闭包究竟是如何实现的。这里还是有必要再次强调下：ECMAScript只使用静态（词法）作用域<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  alert(x);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">(<span class="function"><span class="keyword">function</span> (<span class="params">funArg</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> x = <span class="number">20</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 变量"x"在(lexical)上下文中静态保存的，在该函数创建的时候就保存了</span></span><br><span class="line">  funArg(); <span class="comment">// 10, 而不是20</span></span><br><span class="line"></span><br><span class="line">&#125;)(foo);</span><br></pre></td></tr></table></figure></p>
+<p>回顾作用域的知识，我们知道函数在创建的时候就保存了上层上下文的作用域链（除开异常的情况） （不管这个函数后续是否会激活 —— [[Scope]]在函数创建的时候就有了）：</p>
+<p>这里还要注意的是：在ECMAScript中，同一个父上下文中创建的闭包是共用一个[[Scope]]属性的。也就是说，某个闭包对其中[[Scope]]的变量做修改会影响到其他闭包对其变量的读取：</p>
+<p>这就是说：所有的内部函数都共享同一个父作用域<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> firstClosure;</span><br><span class="line"><span class="keyword">var</span> secondClosure;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> x = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">  firstClosure = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; <span class="keyword">return</span> ++x; &#125;;</span><br><span class="line">  secondClosure = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; <span class="keyword">return</span> --x; &#125;;</span><br><span class="line"></span><br><span class="line">  x = <span class="number">2</span>; <span class="comment">// 影响 AO["x"], 在2个闭包公有的[[Scope]]中</span></span><br><span class="line"></span><br><span class="line">  alert(firstClosure()); <span class="comment">// 3, 通过第一个闭包的[[Scope]]</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foo();</span><br><span class="line"></span><br><span class="line">alert(firstClosure()); <span class="comment">// 4</span></span><br><span class="line">alert(secondClosure()); <span class="comment">// 3</span></span><br></pre></td></tr></table></figure></p>
+<p>关于这个功能有一个非常普遍的错误认识，开发人员在循环语句里创建函数（内部进行计数）的时候经常得不到预期的结果，而期望是每个函数都有自己的值。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> data = [];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> k = <span class="number">0</span>; k &lt; <span class="number">3</span>; k++) &#123;</span><br><span class="line">  data[k] = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    alert(k);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">data[<span class="number">0</span>](); <span class="comment">// 3, 而不是0</span></span><br><span class="line">data[<span class="number">1</span>](); <span class="comment">// 3, 而不是1</span></span><br><span class="line">data[<span class="number">2</span>](); <span class="comment">// 3, 而不是2</span></span><br></pre></td></tr></table></figure></p>
+<p>上述例子就证明了 —— 同一个上下文中创建的闭包是共用一个[[Scope]]属性的。因此上层上下文中的变量“k”的值是引用的值，而这个引用的值在每个循环中都被改变一次。以下是其对应scope的伪码<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">activeContext.Scope = [</span><br><span class="line">  ... <span class="comment">// 其它变量对象</span></span><br><span class="line">  &#123;<span class="attr">data</span>: [...], <span class="attr">k</span>: <span class="number">3</span>&#125; <span class="comment">// 活动对象</span></span><br><span class="line">];</span><br><span class="line"></span><br><span class="line">data[<span class="number">0</span>].[[Scope]] === Scope;</span><br><span class="line">data[<span class="number">1</span>].[[Scope]] === Scope;</span><br><span class="line">data[<span class="number">2</span>].[[Scope]] === Scope;</span><br></pre></td></tr></table></figure></p>
+<p>这样一来，在函数激活的时候，最终使用到的k就已经变成了3了。如下所示，创建一个闭包就可以解决这个问题了：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> data = [];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> k = <span class="number">0</span>; k &lt; <span class="number">3</span>; k++) &#123;</span><br><span class="line">  data[k] = (<span class="function"><span class="keyword">function</span> <span class="title">_helper</span>(<span class="params">x</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      alert(x);</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;)(k); <span class="comment">// 传入"k"值</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 现在结果是正确的了</span></span><br><span class="line">data[<span class="number">0</span>](); <span class="comment">// 0</span></span><br><span class="line">data[<span class="number">1</span>](); <span class="comment">// 1</span></span><br><span class="line">data[<span class="number">2</span>](); <span class="comment">// 2</span></span><br></pre></td></tr></table></figure></p>
+<p>让我们来看看上述代码都发生了什么？函数“_helper”创建出来之后，通过传入参数“k”激活。其返回值也是个函数，该函数保存在对应的数组元素中。这种技术产生了如下效果： 在函数激活时，每次“_helper”都会创建一个新的变量对象，其中含有参数“x”，“x”的值就是传递进来的“k”的值。这样一来，返回的函数的[[Scope]]就成了如下所示：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">data[<span class="number">0</span>].[[Scope]] === [</span><br><span class="line">  ... <span class="comment">// 其它变量对象</span></span><br><span class="line">  父级上下文中的活动对象AO: &#123;<span class="attr">data</span>: [...], <span class="attr">k</span>: <span class="number">3</span>&#125;,</span><br><span class="line">  _helper上下文中的活动对象AO: &#123;<span class="attr">x</span>: <span class="number">0</span>&#125;</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line">data[<span class="number">1</span>].[[Scope]] === [</span><br><span class="line">  ... <span class="comment">// 其它变量对象</span></span><br><span class="line">  父级上下文中的活动对象AO: &#123;<span class="attr">data</span>: [...], <span class="attr">k</span>: <span class="number">3</span>&#125;,</span><br><span class="line">  _helper上下文中的活动对象AO: &#123;<span class="attr">x</span>: <span class="number">1</span>&#125;</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line">data[<span class="number">2</span>].[[Scope]] === [</span><br><span class="line">  ... <span class="comment">// 其它变量对象</span></span><br><span class="line">  父级上下文中的活动对象AO: &#123;<span class="attr">data</span>: [...], <span class="attr">k</span>: <span class="number">3</span>&#125;,</span><br><span class="line">  _helper上下文中的活动对象AO: &#123;<span class="attr">x</span>: <span class="number">2</span>&#125;</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+<p>我们看到，这时函数的[[Scope]]属性就有了真正想要的值了，为了达到这样的目的，我们不得不在[[Scope]]中创建额外的变量对象。要注意的是，在返回的函数中，如果要获取“k”的值，那么该值还是会是3。</p>
+<p>然而，上述提到的方法并不是唯一的方法。通过其他方式也可以获得正确的“k”的值，如下所示：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> data = [];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> k = <span class="number">0</span>; k &lt; <span class="number">3</span>; k++) &#123;</span><br><span class="line">  (data[k] = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    alert(<span class="built_in">arguments</span>.callee.x);</span><br><span class="line">  &#125;).x = k; <span class="comment">// 将k作为函数的一个属性</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 结果也是对的</span></span><br><span class="line">data[<span class="number">0</span>](); <span class="comment">// 0</span></span><br><span class="line">data[<span class="number">1</span>](); <span class="comment">// 1</span></span><br><span class="line">data[<span class="number">2</span>](); <span class="comment">// 2</span></span><br></pre></td></tr></table></figure></p>
+<h1 id="闭包用法实战"><a href="#闭包用法实战" class="headerlink" title="闭包用法实战"></a>闭包用法实战</h1><ul>
+<li>数组排序method sort接受一个排序条件函数作为参数：</li>
+</ul>
+<p><code>arr.sort(compareFunction)</code></p>
+<p>条件函数一般如下格式<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">compare</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (a is less than b by some ordering criterion) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (a is greater than b by the ordering criterion) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// a must be equal to b</span></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>数组的map方法是根据函数中定义的条件将原数组映射到一个新的数组中：<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].map(<span class="function"><span class="keyword">function</span> (<span class="params">element</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> element * <span class="number">2</span>;</span><br><span class="line">&#125;); <span class="comment">// [2, 4, 6]</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>还有应用函数，比如常见的forEach方法，将函数应用到每个数组元素：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>].forEach(<span class="function"><span class="keyword">function</span> (<span class="params">element</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (element % <span class="number">2</span> != <span class="number">0</span>) &#123;</span><br><span class="line">    alert(element);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;); <span class="comment">// 1, 3</span></span><br></pre></td></tr></table></figure></p>
+<p>延迟调用：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var a = 10;</span><br><span class="line">setTimeout(function () &#123;</span><br><span class="line">  alert(a); // 10, after one second</span><br><span class="line">&#125;, 1000);</span><br></pre></td></tr></table></figure></p>
+<p>创建封装的作用域来隐藏辅助对象：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> foo = &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化</span></span><br><span class="line">(<span class="function"><span class="keyword">function</span> (<span class="params">object</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> x = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">  object.getX = <span class="function"><span class="keyword">function</span> <span class="title">_getX</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> x;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">&#125;)(foo);</span><br><span class="line"></span><br><span class="line">alert(foo.getX()); <span class="comment">// 获得闭包 "x" – 10</span></span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/javascript/" rel="tag"># javascript</a>
+          
+            <a href="/tags/闭包/" rel="tag"># 闭包</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/22/function-expression-and-declaration/" rel="next" title="函数声明和函数表达式">
+                <i class="fa fa-chevron-left"></i> 函数声明和函数表达式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Wendy" />
+          <p class="site-author-name" itemprop="name">Wendy</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#概论及问题"><span class="nav-number">1.</span> <span class="nav-text">概论及问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#函数式编程基本概念"><span class="nav-number">1.1.</span> <span class="nav-text">函数式编程基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数式参数问题"><span class="nav-number">1.2.</span> <span class="nav-text">函数式参数问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#闭包"><span class="nav-number">2.</span> <span class="nav-text">闭包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ECMAScript闭包的实现"><span class="nav-number">2.1.</span> <span class="nav-text">ECMAScript闭包的实现</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#闭包用法实战"><span class="nav-number">3.</span> <span class="nav-text">闭包用法实战</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wendy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
